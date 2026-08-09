@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import ru.practicum.moviehub.api.CreateMovieRequest;
+import ru.practicum.moviehub.api.responses.CreateMovieResponse;
+import ru.practicum.moviehub.http.handlers.HttpResponder;
+import ru.practicum.moviehub.model.Movie;
 import ru.practicum.moviehub.store.MoviesStore;
 
 import java.io.IOException;
@@ -16,9 +19,11 @@ public class CreateMovieAction implements MovieAction {
     private final int minYear = 1888;
 
     private MoviesStore store;
+    private HttpResponder responder;
 
-    public CreateMovieAction(MoviesStore store) {
+    public CreateMovieAction(MoviesStore store, HttpResponder responder) {
         this.store = store;
+        this.responder = responder;
     }
 
     @Override
@@ -27,7 +32,14 @@ public class CreateMovieAction implements MovieAction {
         try {
             CreateMovieRequest request = parseRequestBody(exchange);
             if (validateRequest(request)) {
-
+                Movie movie = new Movie(
+                        request.getTitle(),
+                        request.getYear()
+                );
+                String id = store.storeMovie(movie);
+                Gson gson = new Gson();
+                String idSerialized = gson.toJson(new CreateMovieResponse(id));
+                responder.sendJson(exchange, 201, idSerialized);
             } else {
                 // TODO: отправлять осознанную ошибку
                 exchange.sendResponseHeaders(422, -1);

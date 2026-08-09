@@ -15,7 +15,7 @@ public class MoviesHandler extends BaseHttpHandler {
     public MoviesHandler(MoviesStore store) {
         this.store = store;
         actions = Map.of(
-                "GET", new CreateMovieAction(store)
+                "POST", new CreateMovieAction(store, responder)
         );
     }
 
