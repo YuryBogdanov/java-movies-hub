@@ -1,4 +1,4 @@
-package ru.practicum.moviehub.http;
+package ru.practicum.moviehub.http.handlers;
 
 import com.sun.net.httpserver.HttpHandler;
 
