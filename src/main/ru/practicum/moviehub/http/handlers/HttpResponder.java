@@ -1,25 +1,32 @@
 package ru.practicum.moviehub.http.handlers;
-
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
+import ru.practicum.moviehub.api.ErrorResponse;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 public class HttpResponder {
-    private final Gson gson = new Gson();
     private final String CT_JSON = "application/json; charset=UTF-8";
+    private final Gson gson = new Gson();
 
-    public void sendJson(HttpExchange ex, int status, String json) throws IOException {
-        ex.getResponseHeaders().set("Content-Type", CT_JSON);
-        byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
-        ex.sendResponseHeaders(status, bytes.length);
+    public void sendSuccess(HttpExchange exchange, int status, Object object) throws IOException {
+        writeResponse(exchange, status, object);
+    }
 
-        try (OutputStream os = ex.getResponseBody()) {
+    public void sendError(HttpExchange exchange, int status, String json) throws IOException {
+        ErrorResponse errorResponse = new ErrorResponse(json);
+        writeResponse(exchange, status, errorResponse);
+    }
+
+    private void writeResponse(HttpExchange exchange, int status, Object wrappedObject) throws IOException {
+        byte[] bytes = gson.toJson(wrappedObject).getBytes(StandardCharsets.UTF_8);
+        exchange.getResponseHeaders().set("Content-Type", CT_JSON);
+        exchange.sendResponseHeaders(status, bytes.length);
+
+        try (OutputStream os = exchange.getResponseBody()) {
             os.write(bytes);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 }

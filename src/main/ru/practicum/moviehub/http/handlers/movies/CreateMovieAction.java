@@ -28,24 +28,21 @@ public class CreateMovieAction implements MovieAction {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        InputStream inputStream = exchange.getRequestBody();
         try {
             CreateMovieRequest request = parseRequestBody(exchange);
-            if (validateRequest(request)) {
+            CreateMovieRequestValidationResult validationResult = validateRequest(request);
+            if (validationResult.getFullValidationMessage().isEmpty()) {
                 Movie movie = new Movie(
                         request.getTitle(),
                         request.getYear()
                 );
                 String id = store.storeMovie(movie);
-                Gson gson = new Gson();
-                String idSerialized = gson.toJson(new CreateMovieResponse(id));
-                responder.sendJson(exchange, 201, idSerialized);
+                responder.sendSuccess(exchange, 201, new CreateMovieResponse(id));
             } else {
-                // TODO: отправлять осознанную ошибку
-                exchange.sendResponseHeaders(422, -1);
+                responder.sendError(exchange, 422, validationResult.getFullValidationMessage());
             }
-        } catch (JsonSyntaxException | IOException e) {
-            exchange.sendResponseHeaders(400, -1);
+        } catch (Exception e) {
+            responder.sendError(exchange, 500, "Something went wrong");
         }
     }
 
@@ -56,12 +53,15 @@ public class CreateMovieAction implements MovieAction {
         }
     }
 
-    private boolean validateRequest(CreateMovieRequest request) {
-        return validateTitle(request.getTitle()) && validateYear(request.getYear());
+    private CreateMovieRequestValidationResult validateRequest(CreateMovieRequest request) {
+        return new CreateMovieRequestValidationResult(
+                validateTitle(request.getTitle()) ? null : "The title should be up 100 characters",
+                validateYear(request.getYear()) ? null : "The year should be between 1888 and current year"
+        );
     }
 
     private boolean validateTitle(String title) {
-        if (title.isBlank()) {
+        if (title == null || title.isBlank()) {
             return false;
         }
         return title.length() <= 100;
@@ -69,5 +69,36 @@ public class CreateMovieAction implements MovieAction {
 
     private boolean validateYear(int year) {
         return minYear <= year && year <= java.time.LocalDate.now().getYear() + 1;
+    }
+}
+
+class CreateMovieRequestValidationResult {
+    private final String titleValidationResult;
+    private final String yearValidationResult;
+
+    CreateMovieRequestValidationResult(String titleValidationResult, String yearValidationResult) {
+        this.titleValidationResult = titleValidationResult;
+        this.yearValidationResult = yearValidationResult;
+    }
+
+    String getTitleValidationResult() {
+        return titleValidationResult;
+    }
+
+    String getYearValidationResult() {
+        return yearValidationResult;
+    }
+
+    String getFullValidationMessage() {
+        StringBuilder errorMessageBuilder = new StringBuilder();
+        if (getTitleValidationResult() != null) {
+            errorMessageBuilder.append(getTitleValidationResult());
+            errorMessageBuilder.append("; ");
+        }
+        if (getYearValidationResult() != null) {
+            errorMessageBuilder.append(getYearValidationResult());
+        }
+
+        return errorMessageBuilder.toString();
     }
 }
