@@ -6,6 +6,7 @@ import ru.practicum.moviehub.api.ErrorResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public class HttpResponder {
     private final String CT_JSON = "application/json; charset=UTF-8";
@@ -15,8 +16,8 @@ public class HttpResponder {
         writeResponse(exchange, status, object);
     }
 
-    public void sendError(HttpExchange exchange, int status, String json) throws IOException {
-        ErrorResponse errorResponse = new ErrorResponse(json);
+    public void sendError(HttpExchange exchange, int status, String errorMessage, List<String> details) throws IOException {
+        ErrorResponse errorResponse = new ErrorResponse(errorMessage, details);
         writeResponse(exchange, status, errorResponse);
     }
 

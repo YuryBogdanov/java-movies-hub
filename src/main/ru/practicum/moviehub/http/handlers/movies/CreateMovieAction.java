@@ -12,6 +12,10 @@ import ru.practicum.moviehub.store.MoviesStore;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CreateMovieAction implements MovieAction {
     private final int minYear = 1888;
@@ -29,18 +33,30 @@ public class CreateMovieAction implements MovieAction {
         try {
             CreateMovieRequest request = parseRequestBody(exchange);
             CreateMovieRequestValidationResult validationResult = validateRequest(request);
-            if (validationResult.getFullValidationMessage().isEmpty()) {
+            if (validationResult.getValidationMessages().isEmpty()) {
                 Movie movie = new Movie(
                         request.getTitle(),
                         request.getYear()
                 );
                 String id = store.storeMovie(movie);
-                responder.sendSuccess(exchange, 201, new CreateMovieResponse(id));
+                responder.sendSuccess(
+                        exchange,
+                        201,
+                        new CreateMovieResponse(id)
+                );
             } else {
-                responder.sendError(exchange, 422, validationResult.getFullValidationMessage());
+                responder.sendError(
+                        exchange,
+                        422,
+                        "Validation error. See details.", validationResult.getValidationMessages()
+                );
             }
         } catch (Exception e) {
-            responder.sendError(exchange, 500, "Something went wrong");
+            responder.sendError(
+                    exchange,
+                    500,
+                    "Something went wrong", List.of()
+            );
         }
     }
 
@@ -87,16 +103,9 @@ class CreateMovieRequestValidationResult {
         return yearValidationResult;
     }
 
-    String getFullValidationMessage() {
-        StringBuilder errorMessageBuilder = new StringBuilder();
-        if (getTitleValidationResult() != null) {
-            errorMessageBuilder.append(getTitleValidationResult());
-            errorMessageBuilder.append("; ");
-        }
-        if (getYearValidationResult() != null) {
-            errorMessageBuilder.append(getYearValidationResult());
-        }
-
-        return errorMessageBuilder.toString();
+    List<String> getValidationMessages() {
+        return Stream.of(getTitleValidationResult(), getYearValidationResult())
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 }
