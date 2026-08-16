@@ -10,16 +10,14 @@ import ru.practicum.moviehub.model.Movie;
 import ru.practicum.moviehub.store.MoviesStore;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Calendar;
 
 public class CreateMovieAction implements MovieAction {
     private final int minYear = 1888;
 
-    private MoviesStore store;
-    private HttpResponder responder;
+    private final MoviesStore store;
+    private final HttpResponder responder;
 
     public CreateMovieAction(MoviesStore store, HttpResponder responder) {
         this.store = store;
@@ -55,7 +53,7 @@ public class CreateMovieAction implements MovieAction {
 
     private CreateMovieRequestValidationResult validateRequest(CreateMovieRequest request) {
         return new CreateMovieRequestValidationResult(
-                validateTitle(request.getTitle()) ? null : "The title should be up 100 characters",
+                validateTitle(request.getTitle()) ? null : "The title should be up to 100 characters",
                 validateYear(request.getYear()) ? null : "The year should be between 1888 and current year"
         );
     }
