@@ -21,6 +21,10 @@ public class MoviesHandler extends BaseHttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
+        if (!validateContentType(exchange)) {
+            return;
+        }
+
         String method = exchange.getRequestMethod();
 
         MovieAction action = actions.get(method);

@@ -48,14 +48,16 @@ public class CreateMovieAction implements MovieAction {
                 responder.sendError(
                         exchange,
                         422,
-                        "Validation error. See details.", validationResult.getValidationMessages()
+                        "Validation error. See details.",
+                        validationResult.getValidationMessages()
                 );
             }
         } catch (Exception e) {
             responder.sendError(
                     exchange,
                     500,
-                    "Something went wrong", List.of()
+                    "Something went wrong",
+                    List.of()
             );
         }
     }

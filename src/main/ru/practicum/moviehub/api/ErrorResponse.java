@@ -8,5 +8,6 @@ public class ErrorResponse {
 
     public ErrorResponse(String message, List<String> details) {
         this.errorMessage = message;
+        this.details = details;
     }
 }
