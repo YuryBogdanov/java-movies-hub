@@ -1,4 +1,4 @@
-package ru.practicum.moviehub.api;
+package ru.practicum.moviehub.api.requests;
 
 public class CreateMovieRequest {
     private String title;

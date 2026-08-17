@@ -3,7 +3,7 @@ package ru.practicum.moviehub.http.handlers.movies;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
-import ru.practicum.moviehub.api.CreateMovieRequest;
+import ru.practicum.moviehub.api.requests.CreateMovieRequest;
 import ru.practicum.moviehub.api.responses.CreateMovieResponse;
 import ru.practicum.moviehub.http.handlers.HttpResponder;
 import ru.practicum.moviehub.model.Movie;
