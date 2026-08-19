@@ -3,6 +3,7 @@ package ru.practicum.moviehub.store;
 import ru.practicum.moviehub.model.Movie;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -22,6 +23,13 @@ public class MoviesStore {
 
     public Optional<Movie> getMovie(String id) {
         return Optional.ofNullable(storage.get(id));
+    }
+
+    public List<Movie> getAllMovies() {
+        return storage
+                .values()
+                .stream()
+                .toList();
     }
 
     private Optional<String> checkIfMovieExists(Movie movie) {

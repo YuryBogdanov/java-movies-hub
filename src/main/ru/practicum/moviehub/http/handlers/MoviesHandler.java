@@ -2,6 +2,7 @@ package ru.practicum.moviehub.http.handlers;
 
 import com.sun.net.httpserver.HttpExchange;
 import ru.practicum.moviehub.http.handlers.movies.CreateMovieAction;
+import ru.practicum.moviehub.http.handlers.movies.GetAllMoviesAction;
 import ru.practicum.moviehub.http.handlers.movies.GetMovieByIdAction;
 import ru.practicum.moviehub.http.handlers.movies.MovieAction;
 import ru.practicum.moviehub.store.MoviesStore;
@@ -14,11 +15,13 @@ public class MoviesHandler extends BaseHttpHandler {
     private MoviesStore store;
     private final CreateMovieAction createMovieAction;
     private final GetMovieByIdAction getMovieByIdAction;
+    private final GetAllMoviesAction getAllMoviesAction;
 
     public MoviesHandler(MoviesStore store) {
         this.store = store;
         this.createMovieAction = new CreateMovieAction(store, responder);
         this.getMovieByIdAction = new GetMovieByIdAction(store, responder);
+        this.getAllMoviesAction = new GetAllMoviesAction(store, responder);
     }
 
     @Override
@@ -34,6 +37,8 @@ public class MoviesHandler extends BaseHttpHandler {
         Optional<String> movieId = getMovieIdFromRequest(exchange);
         if (movieId.isPresent()) {
             getMovieByIdAction.handle(exchange);
+        } else {
+            getAllMoviesAction.handle(exchange);
         }
     }
 
