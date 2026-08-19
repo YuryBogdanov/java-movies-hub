@@ -40,6 +40,15 @@ public class MoviesStore {
                 .toList();
     }
 
+    public boolean deleteMovieWithId(String id) {
+        if (storage.containsKey(id)) {
+            storage.remove(id);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private Optional<String> checkIfMovieExists(Movie movie) {
         return storage
                 .entrySet()

@@ -13,6 +13,7 @@ public class MoviesHandler extends BaseHttpHandler {
     private final GetMovieByIdAction getMovieByIdAction;
     private final GetAllMoviesAction getAllMoviesAction;
     private final FilterMoviesByYearAction filterMoviesByYearAction;
+    private final DeleteMovieAction deleteMovieAction;
 
     public MoviesHandler(MoviesStore store) {
         this.store = store;
@@ -20,6 +21,7 @@ public class MoviesHandler extends BaseHttpHandler {
         this.getMovieByIdAction = new GetMovieByIdAction(store, responder);
         this.getAllMoviesAction = new GetAllMoviesAction(store, responder);
         this.filterMoviesByYearAction = new FilterMoviesByYearAction(store, responder);
+        this.deleteMovieAction = new DeleteMovieAction(store, responder);
     }
 
     @Override
@@ -40,6 +42,11 @@ public class MoviesHandler extends BaseHttpHandler {
         } else {
             getAllMoviesAction.handle(exchange);
         }
+    }
+
+    @Override
+    protected void handleDeleteRequest(HttpExchange exchange) throws IOException {
+        deleteMovieAction.handle(exchange);
     }
 
     private Optional<String> getMovieIdFromRequest(HttpExchange exchange) {
