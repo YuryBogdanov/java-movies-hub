@@ -8,6 +8,7 @@ import ru.practicum.moviehub.store.MoviesStore;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 
 public class MoviesHandler extends BaseHttpHandler {
     private MoviesStore store;
@@ -26,5 +27,18 @@ public class MoviesHandler extends BaseHttpHandler {
             return;
         }
         createMovieAction.handle(exchange);
+    }
+
+    @Override
+    protected void handleGetRequest(HttpExchange exchange) throws IOException {
+        Optional<String> movieId = getMovieIdFromRequest(exchange);
+        if (movieId.isPresent()) {
+            getMovieByIdAction.handle(exchange);
+        }
+    }
+
+    private Optional<String> getMovieIdFromRequest(HttpExchange exchange) {
+        String[] pathElements = exchange.getRequestURI().getPath().split("/");
+        return pathElements.length == 3 ? Optional.of(pathElements[2]) : Optional.empty();
     }
 }

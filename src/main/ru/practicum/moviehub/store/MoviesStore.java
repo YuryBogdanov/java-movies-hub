@@ -20,6 +20,10 @@ public class MoviesStore {
         }
     }
 
+    public Optional<Movie> getMovie(String id) {
+        return Optional.ofNullable(storage.get(id));
+    }
+
     private Optional<String> checkIfMovieExists(Movie movie) {
         return storage
                 .entrySet()
