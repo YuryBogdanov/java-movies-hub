@@ -32,6 +32,14 @@ public class MoviesStore {
                 .toList();
     }
 
+    public List<Movie> getAllMoviesWithYear(int year) {
+        return storage
+                .values()
+                .stream()
+                .filter(m -> m.getYear() == year)
+                .toList();
+    }
+
     private Optional<String> checkIfMovieExists(Movie movie) {
         return storage
                 .entrySet()
