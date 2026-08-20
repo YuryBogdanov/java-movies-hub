@@ -56,7 +56,11 @@ public class MoviesHandler extends BaseHttpHandler {
 
     private boolean hasFilteringParameter(HttpExchange exchange) {
         String query = exchange.getRequestURI().getQuery();
-        String[] queryComponents = query.split("=");
-        return queryComponents.length == 2 && queryComponents[0].equals("year");
+        if (query != null) {
+            String[] queryComponents = query.split("=");
+            return queryComponents.length == 2 && queryComponents[0].equals("year");
+        } else {
+            return false;
+        }
     }
 }
