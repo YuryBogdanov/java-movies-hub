@@ -29,11 +29,10 @@ public class GetMovieByIdAction implements MovieAction {
                 Movie movieToReturn = movie.get();
                 responder.sendSuccess(exchange, 200, movieToReturn);
             } else {
-                responder.sendError(exchange, 500, "Wrong", List.of());
+                responder.sendError(exchange, 404, "Not found");
             }
         } else {
-            // TODO: поправить ошибку
-            responder.sendError(exchange, 500, "Wrong", List.of());
+            responder.sendError(exchange, 400, "Bad request", List.of("Incorrect request"));
         }
     }
 }

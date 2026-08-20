@@ -1,6 +1,7 @@
 package ru.practicum.moviehub.http.handlers.movies;
 
 import com.sun.net.httpserver.HttpExchange;
+import ru.practicum.moviehub.api.responses.DeleteMovieResponse;
 import ru.practicum.moviehub.http.handlers.HttpResponder;
 import ru.practicum.moviehub.model.Movie;
 import ru.practicum.moviehub.store.MoviesStore;
@@ -25,14 +26,21 @@ public class DeleteMovieAction implements MovieAction {
         if (pathElements.length == 3) {
             movieId = pathElements[2];
             if (store.deleteMovieWithId(movieId)) {
-                responder.sendSuccess(exchange, 200, "OK");
+                responder.sendSuccess(exchange, 200, new DeleteMovieResponse("OK"));
             } else {
-                // TODO: поправить ошибку
-                responder.sendError(exchange, 500, "Wrong", List.of());
+                responder.sendError(
+                        exchange,
+                        400,
+                        "Movie removal error",
+                        List.of("Movie with id = " + movieId + " doesn't exist")
+                );
             }
         } else {
-            // TODO: поправить ошибку
-            responder.sendError(exchange, 500, "Wrong", List.of());
+            responder.sendError(
+                    exchange,
+                    400,
+                    "Movie removal error", List.of("Incorrect request")
+            );
         }
     }
 }

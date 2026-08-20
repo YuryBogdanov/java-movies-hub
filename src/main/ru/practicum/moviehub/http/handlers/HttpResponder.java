@@ -21,6 +21,11 @@ public class HttpResponder {
         writeResponse(exchange, status, errorResponse);
     }
 
+    public void sendError(HttpExchange exchange, int status, String errorMessage) throws IOException {
+        ErrorResponse errorResponse = new ErrorResponse(errorMessage);
+        writeResponse(exchange, status, errorResponse);
+    }
+
     private void writeResponse(HttpExchange exchange, int status, Object wrappedObject) throws IOException {
         byte[] bytes = gson.toJson(wrappedObject).getBytes(StandardCharsets.UTF_8);
         exchange.getResponseHeaders().set("Content-Type", CT_JSON);

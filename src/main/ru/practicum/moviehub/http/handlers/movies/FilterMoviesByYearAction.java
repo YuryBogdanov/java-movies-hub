@@ -29,10 +29,20 @@ public class FilterMoviesByYearAction implements MovieAction {
                 List<Movie> movies = store.getAllMoviesWithYear(year);
                 responder.sendSuccess(exchange, 200, movies);
             } else {
-                responder.sendError(exchange, 400, "Something has gone wrong", List.of("Год должен быть числом от 1888 до текущего года"));
+                responder.sendError(
+                        exchange,
+                        400,
+                        "Something has gone wrong",
+                        List.of("Year must be from 1888 until current year + 1")
+                );
             }
         } catch (NumberFormatException e) {
-            responder.sendError(exchange, 400, "Something has gone wrong", List.of("Год должен быть числом"));
+            responder.sendError(
+                    exchange,
+                    400,
+                    "Something has gone wrong",
+                    List.of("A year must be a number")
+            );
         }
 
     }

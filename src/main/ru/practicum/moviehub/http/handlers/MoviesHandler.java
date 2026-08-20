@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class MoviesHandler extends BaseHttpHandler {
-    private MoviesStore store;
+    private final MoviesStore store;
     private final CreateMovieAction createMovieAction;
     private final GetMovieByIdAction getMovieByIdAction;
     private final GetAllMoviesAction getAllMoviesAction;

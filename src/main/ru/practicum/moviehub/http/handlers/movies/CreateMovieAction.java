@@ -57,7 +57,7 @@ public class CreateMovieAction implements MovieAction {
                     exchange,
                     500,
                     "Something went wrong",
-                    List.of()
+                    List.of(e.getMessage())
             );
         }
     }

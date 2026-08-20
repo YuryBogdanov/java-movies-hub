@@ -45,7 +45,11 @@ public abstract class BaseHttpHandler implements HttpHandler {
                         List.of("Expected 'application/json; charset=UTF-8'")
                 );
             } catch (IOException e) {
-                System.out.println("=== O kurwa");
+                // Вот тут нужно разобраться с best practice, может будет дальше в курсе.
+                // Если мы получили ошибку - скорее всего отправить клиенту ответ уже не получится.
+                // Остается только записать в лог данные, чтобы в системе мониторинга поймать алерт и разобраться
+                // Пока оставлю тут принт, чтобы не усложнять задачу. Если надо поправить - напишите плез в комментарии при приёмке.
+                System.out.println("=== Error sending response: " + e.getMessage());
             }
             return false;
         }
