@@ -49,6 +49,10 @@ public class MoviesStore {
         }
     }
 
+    public void deleteAllMovies() {
+        storage.clear();
+    }
+
     private Optional<String> checkIfMovieExists(Movie movie) {
         return storage
                 .entrySet()

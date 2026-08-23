@@ -26,11 +26,11 @@ public class DeleteMovieAction implements MovieAction {
         if (pathElements.length == 3) {
             movieId = pathElements[2];
             if (store.deleteMovieWithId(movieId)) {
-                responder.sendSuccess(exchange, 200, new DeleteMovieResponse("OK"));
+                responder.sendSuccess(exchange, 204, new DeleteMovieResponse("OK"));
             } else {
                 responder.sendError(
                         exchange,
-                        400,
+                        404,
                         "Movie removal error",
                         List.of("Movie with id = " + movieId + " doesn't exist")
                 );
