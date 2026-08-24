@@ -29,6 +29,7 @@ public class MoviesStore {
         return storage
                 .values()
                 .stream()
+                .sorted()
                 .toList();
     }
 

@@ -1,6 +1,6 @@
 package ru.practicum.moviehub.model;
 
-public class Movie {
+public class Movie implements Comparable<Movie> {
     private final String title;
     private final int year;
 
@@ -15,5 +15,10 @@ public class Movie {
 
     public int getYear() {
         return year;
+    }
+
+    @Override
+    public int compareTo(Movie m) {
+        return Integer.compare(this.year, m.year);
     }
 }
