@@ -226,4 +226,40 @@ public class MoviesApiTest {
         // then
         assertEquals(415, response.statusCode());
     }
+
+    @Test
+    void getMoviesById_returnsMovie_ifItIsPresent() throws Exception {
+        // given
+        Movie movie = new Movie("Some like it hot", 1959);
+        String movieId = store.storeMovie(movie);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE + "/movies/" + movieId))
+                .header("Content-Type", "application/json; charset=UTF-8")
+                .GET()
+                .build();
+
+        // when
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        Gson gson = new Gson();
+        Movie responseMovie = gson.fromJson(response.body(), Movie.class);
+
+        // then
+        assertEquals(movie, responseMovie);
+    }
+
+    @Test
+    void getMoviesById_returnsError_ifItIsNotPresent() throws Exception {
+        // given
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE + "/movies/1234"))
+                .header("Content-Type", "application/json; charset=UTF-8")
+                .GET()
+                .build();
+
+        // when
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+
+        // then
+        assertEquals(404, response.statusCode());
+    }
 }

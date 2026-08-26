@@ -21,4 +21,13 @@ public class Movie implements Comparable<Movie> {
     public int compareTo(Movie m) {
         return Integer.compare(this.year, m.year);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+        Movie objAsMovie = (Movie) obj;
+        return this.getTitle().equals(objAsMovie.getTitle()) && this.getYear() == objAsMovie.getYear();
+    }
 }
