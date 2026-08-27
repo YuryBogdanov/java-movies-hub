@@ -21,9 +21,11 @@ public class GetMovieByIdAction implements MovieAction {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String[] pathElements = exchange.getRequestURI().getPath().split("/");
-        String movieId;
-        if (pathElements.length == 3) {
-            movieId = pathElements[2];
+        if (pathElements.length != 3) {
+            responder.sendError(exchange, 400, "Bad request", List.of("Incorrect request"));
+        }
+        try {
+            int movieId = Integer.parseInt(pathElements[2]);
             Optional<Movie> movie = store.getMovie(movieId);
             if (movie.isPresent()) {
                 Movie movieToReturn = movie.get();
@@ -31,8 +33,8 @@ public class GetMovieByIdAction implements MovieAction {
             } else {
                 responder.sendError(exchange, 404, "Not found");
             }
-        } else {
-            responder.sendError(exchange, 400, "Bad request", List.of("Incorrect request"));
+        } catch (NumberFormatException e) {
+            responder.sendError(exchange, 400, "Bad request", List.of("ID must be a number"));
         }
     }
 }

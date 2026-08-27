@@ -38,7 +38,7 @@ public class CreateMovieAction implements MovieAction {
                         request.getTitle(),
                         request.getYear()
                 );
-                String id = store.storeMovie(movie);
+                Integer id = store.storeMovie(movie);
                 responder.sendSuccess(
                         exchange,
                         201,

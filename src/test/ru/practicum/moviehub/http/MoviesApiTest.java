@@ -231,7 +231,7 @@ public class MoviesApiTest {
     void getMoviesById_returnsMovie_ifItIsPresent() throws Exception {
         // given
         Movie movie = new Movie("Some like it hot", 1959);
-        String movieId = store.storeMovie(movie);
+        int movieId = store.storeMovie(movie);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE + "/movies/" + movieId))
                 .header("Content-Type", "application/json; charset=UTF-8")
@@ -261,5 +261,21 @@ public class MoviesApiTest {
 
         // then
         assertEquals(404, response.statusCode());
+    }
+
+    @Test
+    void getMoviesById_returnsError_ifIdIsNotNumber() throws Exception {
+        // given
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE + "/movies/some_movie"))
+                .header("Content-Type", "application/json; charset=UTF-8")
+                .GET()
+                .build();
+
+        // when
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+
+        // then
+        assertEquals(400, response.statusCode());
     }
 }

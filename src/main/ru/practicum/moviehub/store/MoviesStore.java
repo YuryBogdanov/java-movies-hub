@@ -8,20 +8,21 @@ import java.util.Map;
 import java.util.Optional;
 
 public class MoviesStore {
-    private HashMap<String, Movie> storage = new HashMap<>();
+    private HashMap<Integer, Movie> storage = new HashMap<>();
 
-    public String storeMovie(Movie movie) {
-        Optional<String> possibleId = checkIfMovieExists(movie);
+    public Integer storeMovie(Movie movie) {
+        Optional<Integer> possibleId = checkIfMovieExists(movie);
         if (possibleId.isPresent()) {
             return possibleId.get();
         } else {
-            String id = java.util.UUID.randomUUID().toString();
+//            String id = java.util.UUID.randomUUID().toString();
+            int id = storage.size() + 1;
             storage.put(id, movie);
             return id;
         }
     }
 
-    public Optional<Movie> getMovie(String id) {
+    public Optional<Movie> getMovie(int id) {
         return Optional.ofNullable(storage.get(id));
     }
 
@@ -41,7 +42,7 @@ public class MoviesStore {
                 .toList();
     }
 
-    public boolean deleteMovieWithId(String id) {
+    public boolean deleteMovieWithId(Integer id) {
         if (storage.containsKey(id)) {
             storage.remove(id);
             return true;
@@ -54,7 +55,7 @@ public class MoviesStore {
         storage.clear();
     }
 
-    private Optional<String> checkIfMovieExists(Movie movie) {
+    private Optional<Integer> checkIfMovieExists(Movie movie) {
         return storage
                 .entrySet()
                 .stream()

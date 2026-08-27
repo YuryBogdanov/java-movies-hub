@@ -22,9 +22,9 @@ public class DeleteMovieAction implements MovieAction {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String[] pathElements = exchange.getRequestURI().getPath().split("/");
-        String movieId;
+        int movieId;
         if (pathElements.length == 3) {
-            movieId = pathElements[2];
+            movieId = Integer.parseInt(pathElements[2]);
             if (store.deleteMovieWithId(movieId)) {
                 responder.sendSuccess(exchange, 204, new DeleteMovieResponse("OK"));
             } else {
