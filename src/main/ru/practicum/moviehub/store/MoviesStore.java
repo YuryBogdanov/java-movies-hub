@@ -15,7 +15,6 @@ public class MoviesStore {
         if (possibleId.isPresent()) {
             return possibleId.get();
         } else {
-//            String id = java.util.UUID.randomUUID().toString();
             int id = storage.size() + 1;
             storage.put(id, movie);
             return id;

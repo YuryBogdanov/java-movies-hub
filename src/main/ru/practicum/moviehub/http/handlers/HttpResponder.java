@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class HttpResponder {
-    private final String CT_JSON = "application/json; charset=UTF-8";
+    private final String contentTypeJson = "application/json; charset=UTF-8";
     private final Gson gson = new Gson();
 
     public void sendSuccess(HttpExchange exchange, int status, Object object) throws IOException {
@@ -28,7 +28,7 @@ public class HttpResponder {
 
     private void writeResponse(HttpExchange exchange, int status, Object wrappedObject) throws IOException {
         byte[] bytes = gson.toJson(wrappedObject).getBytes(StandardCharsets.UTF_8);
-        exchange.getResponseHeaders().set("Content-Type", CT_JSON);
+        exchange.getResponseHeaders().set("Content-Type", contentTypeJson);
         exchange.sendResponseHeaders(status, bytes.length);
 
         try (OutputStream os = exchange.getResponseBody()) {

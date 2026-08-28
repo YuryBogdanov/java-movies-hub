@@ -1,7 +1,6 @@
 package ru.practicum.moviehub.api;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ErrorResponse {
     private String error;

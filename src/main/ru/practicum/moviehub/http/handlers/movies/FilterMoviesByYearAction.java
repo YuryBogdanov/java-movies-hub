@@ -25,7 +25,7 @@ public class FilterMoviesByYearAction implements MovieAction {
         String[] queryComponents = query.split("=");
         try {
             int year = Integer.parseInt(queryComponents[1]);
-            if (validateYear(exchange, year)) {
+            if (validateYear(year)) {
                 List<Movie> movies = store.getAllMoviesWithYear(year);
                 responder.sendSuccess(exchange, 200, movies);
             } else {
@@ -47,7 +47,7 @@ public class FilterMoviesByYearAction implements MovieAction {
 
     }
 
-    private boolean validateYear(HttpExchange exchange, int year) {
+    private boolean validateYear(int year) {
         return minYear <= year && year <= java.time.LocalDate.now().getYear() + 1;
     }
 }

@@ -1,5 +1,4 @@
 package ru.practicum.moviehub.http.handlers;
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -7,7 +6,7 @@ import java.io.IOException;
 import java.util.List;
 
 public abstract class BaseHttpHandler implements HttpHandler {
-    private final String CT_JSON = "application/json; charset=UTF-8";
+    private final String contentTypeJson = "application/json; charset=UTF-8";
     protected HttpResponder responder = new HttpResponder();
 
     @Override
@@ -36,7 +35,7 @@ public abstract class BaseHttpHandler implements HttpHandler {
     protected boolean validateContentType(HttpExchange exchange) {
         String ctHeader = exchange.getRequestHeaders().get("Content-Type").getFirst();
 
-        if (ctHeader == null || !ctHeader.equals(CT_JSON)) {
+        if (ctHeader == null || !ctHeader.equals(contentTypeJson)) {
             try {
                 responder.sendError(
                         exchange,

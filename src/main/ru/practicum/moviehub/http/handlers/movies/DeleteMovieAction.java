@@ -3,12 +3,10 @@ package ru.practicum.moviehub.http.handlers.movies;
 import com.sun.net.httpserver.HttpExchange;
 import ru.practicum.moviehub.api.responses.DeleteMovieResponse;
 import ru.practicum.moviehub.http.handlers.HttpResponder;
-import ru.practicum.moviehub.model.Movie;
 import ru.practicum.moviehub.store.MoviesStore;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 public class DeleteMovieAction implements MovieAction {
     private final MoviesStore store;
