@@ -278,4 +278,36 @@ public class MoviesApiTest {
         // then
         assertEquals(400, response.statusCode());
     }
+
+    @Test
+    void deleteMovie_returnsNoContent_ifSuccessfullyDeletedMovie() throws Exception {
+        // given
+        Movie movie = new Movie("Some like it hot", 1959);
+        int movieId = store.storeMovie(movie);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE + "/movies/" + movieId))
+                .DELETE()
+                .build();
+
+        // when
+        HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
+
+        // then
+        assertEquals(204, response.statusCode());
+    }
+
+    @Test
+    void deleteMovie_returnsNotFound_ifNoMovieWithIdIsStored() throws Exception {
+        // given
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE + "/movies/123"))
+                .DELETE()
+                .build();
+
+        // when
+        HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
+
+        // then
+        assertEquals(404, response.statusCode());
+    }
 }
