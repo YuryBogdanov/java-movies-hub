@@ -1,6 +1,7 @@
 package ru.practicum.moviehub.http;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +11,7 @@ import ru.practicum.moviehub.api.requests.CreateMovieRequest;
 import ru.practicum.moviehub.model.Movie;
 import ru.practicum.moviehub.store.MoviesStore;
 
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -17,8 +19,10 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MoviesApiTest {
     private static final String BASE = "http://localhost:8080";
@@ -309,5 +313,53 @@ public class MoviesApiTest {
 
         // then
         assertEquals(404, response.statusCode());
+    }
+
+    @Test
+    void getMoviesWithYear_returnsCorrectMovies() throws Exception {
+        // given
+        Movie movie1 = new Movie("Some like it hot", 1959);
+        Movie movie2 = new Movie("Al Capone", 1959);
+        Movie movie3 = new Movie("The Godfather", 1972);
+        Stream.of(movie1, movie2, movie3).forEach(store::storeMovie);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE + "/movies?year=1959"))
+                .GET()
+                .build();
+
+        // when
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<Movie>>(){}.getType();
+        List<Movie> movies = gson.fromJson(response.body(), listType);
+
+        // then
+        assertEquals(2, movies.size());
+        assertEquals(200, response.statusCode());
+        assertTrue(movies.contains(movie1));
+        assertTrue(movies.contains(movie2));
+    }
+
+    @Test
+    void getMoviesWithYear_returnsError_ifRequestIsIncorrect() throws Exception {
+        // given
+        Movie movie1 = new Movie("Some like it hot", 1959);
+        Movie movie2 = new Movie("Al Capone", 1959);
+        Movie movie3 = new Movie("The Godfather", 1972);
+        Stream.of(movie1, movie2, movie3).forEach(store::storeMovie);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE + "/movies?year=wow"))
+                .GET()
+                .build();
+
+        // when
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        Gson gson = new Gson();
+        ErrorResponse error = gson.fromJson(response.body(), ErrorResponse.class);
+
+        // then
+        assertEquals(400, response.statusCode());
+        assertEquals("Something has gone wrong", error.getError());
+        assertEquals("A year must be a number", error.getDetails().getFirst());
     }
 }
